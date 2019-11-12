@@ -1,85 +1,94 @@
 const nozzleData = {
   "3500" : {
-    "1.7" : {
-      "0.75" : {
-        "throw": 4.6,
-        "flow" : 2.04 
-      },
-      "1.0" : {
-        "throw": 6.1,
+    "1.7" : [
+     {
+       "nozzle": "0.75",
+       "radius": 4.6,
+       "flow" : 2.04 
+     },
+     {
+        "nozzle":"1.0", 
+        "radius": 6.1,
         "flow" : 2.91 
       },
-      "1.5" : {
-        "throw": 7.0,
+      {
+        "nozzle": "1.5",
+        "radius": 7.0,
         "flow" : 4.01 
       },
-      "2.0" : {
-        "throw": 8.2,
+      {
+        "nozzle": "2.0",
+        "radius": 8.2,
         "flow" : 5.3 
       },
-      "3.0" : {
-        "throw": 8.8,
+      {
+        "nozzle": "3.0",
+        "radius": 8.8,
         "flow" : 8.21 
       },
-      "4.0" : {
-        "throw": 9.4,
+      {
+        "nozzle": "4.0",
+        "radius": 9.4,
         "flow" : 11.24 
       }
+    ]
+        
+      
     },
     "2.0" : {
       "0.75" : {
-        "throw": 4.8,
+        "radius": 4.8,
         "flow" : 2.24 
       },
       "1.0" : {
-        "throw": 6.2,
+        "radius": 6.2,
         "flow" : 3.14 
       },
       "1.5" : {
-        "throw": 7.0,
+        "radius": 7.0,
         "flow" : 4.35 
       },
       "2.0" : {
-        "throw": 8.2,
+        "radius": 8.2,
         "flow" : 5.74 
       },
       "3.0" : {
-        "throw": 9.1,
+        "radius": 9.1,
         "flow" : 8.87 
       },
       "4.0" : {
-        "throw": 9.7,
+        "radius": 9.7,
         "flow" : 12.17 
       }
     },
     "2.5" : {
       "0.75" : {
-        "throw": 5.2,
+        "radius": 5.2,
         "flow" : 2.58 
       },
       "1.0" : {
-        "throw": 6.4,
+        "radius": 6.4,
         "flow" : 3.55 
       },
       "1.5" : {
-        "throw": 7.0,
+        "radius": 7.0,
         "flow" : 4.94 
       },
       "2.0" : {
-        "throw": 8.2,
+        "radius": 8.2,
         "flow" : 6.51 
       },
       "3.0" : {
-        "throw": 9.4,
+        "radius": 9.4,
         "flow" : 11.13 
       },
       "4.0" : {
-        "throw": 10.6,
+        "radius": 10.6,
         "flow" : 15.32 
       }
     }
   }
-}
+
 
 class Model {
   constructor() {}
