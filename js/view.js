@@ -20,9 +20,10 @@ class View {
     this.legendHeading.textContent = 'Select your sprinkler type, working pressure and flow rate'
 
     // Sprinkler type input
-    this.sprinklerSelect = this._createSelect('sprinkler-type', 'Sprinkler Type', 'sprinkler-type');
-    this.pressureSelect = this._createSelect('pressure', 'Pressure (Bar)', 'pressure' )
-    this.flowInput = this._createInput('number', 'flow-rate', 'Flow rate (Litres per minute)', 'flow-rate')
+    this.sprinklerSelect = this._createSelect('sprinkler-type', 'Sprinkler Type', 'sprinkler-type', true);
+    this.pressureSelect = this._createSelect('pressure', 'Pressure (Bar)', 'pressure', true )
+    this.flowInput = this._createInput('number', 'flow-rate', 'Flow rate (Litres per minute)', 'flow-rate', true)
+    
     this.setButton = this._createElement('button')
     this.setButton.id = 'set-values'
     this.setButton.textContent = 'Set sprinkler type, pressure and flow'
@@ -61,25 +62,25 @@ class View {
     return wrapper
   }
 
-  _createInput(type, id, labelName, className) {
-    const input = this._createElement('input')
+  _createInput(type, id, labelName, className, wrapped = false) {
+    const input = this._createElement('input', className)
     input.id = id
     input.type = type
     const label = this._createElement('label')
     label.htmlFor = id
     label.textContent = labelName
-    const wrapper = this._wrapElements([label, input],'div', className)
-    return wrapper;
+    const wrapper = wrapped ? this._wrapElements([label, input], 'p', `${className}-container`) : null
+    return wrapped ? wrapper : {'label': label, 'input': input}
   }
 
-  _createSelect(id, labelName, className) {
-    const select = this._createElement('select')
+  _createSelect(id, labelName, className, wrapped = false) {
+    const select = this._createElement('select', className)
     select.id = id
     const label = this._createElement('label')
     label.htmlFor = id
     label.textContent = labelName
-    const wrapper = this._wrapElements([label, select],'div', className)
-    return wrapper;
+    const wrapper = wrapped ? this._wrapElements([label, select], 'p', `${className}-container`) : null
+    return wrapped ? wrapper : {'label': label, 'select': select}
   }
 
   /* public functions */
@@ -102,7 +103,7 @@ class View {
       const list = sprinklers.map((sprinkler, i) => {
        
         // amount adjuster
-        const amount = this._createInput('number', `n-${sprinkler.nozzle}`, sprinkler.nozzle, `amount`)
+        const nozzleAdjust = this._createInput('number', `n-${sprinkler.nozzle}`, sprinkler.nozzle, `amount`)
 
         // throw indicator
         const radius = this._createElement('p', 'radius')
@@ -117,7 +118,7 @@ class View {
         */
 
         // row to contain elements
-        const li = this._wrapElements([amount, radius, flow], 'li', 'row')
+        const li = this._wrapElements([nozzleAdjust.label, nozzleAdjust.input, radius, flow], 'li', 'row')
         li.id = `row-${sprinkler.nozzle}`
         
         
