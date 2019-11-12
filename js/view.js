@@ -31,7 +31,7 @@ class View {
     // form body - inputs for number of sprinklers and view number of stations calculated 
     this.calculatorHeading = this._createElement('h2', 'legend')
     this.calculatorHeading.textContent = 'How many of each sprinkler do you need?'
-    this.sprinklers = this._createElement('ul')
+    this.sprinklers = this._createElement('ul', 'table')
     this.calculator = this._wrapElements([this.calculatorHeading, this.sprinklers], 'fieldset')
     this.form = this._wrapElements([this.formHeader, this.calculator], 'form')
 
@@ -102,14 +102,14 @@ class View {
       const list = sprinklers.map((sprinkler, i) => {
        
         // amount adjuster
-        const amount = this._createInput('number', `n-${nozzle}`, nozzle, `amount`)
+        const amount = this._createInput('number', `n-${sprinkler.nozzle}`, sprinkler.nozzle, `amount`)
 
         // throw indicator
-        const radius = this._createElement('span', 'radius')
+        const radius = this._createElement('p', 'radius')
         radius.textContent = sprinkler['radius']
 
         // flow counter
-        const flow = this._createElement('span', 'flow')
+        const flow = this._createElement('p', 'flow')
         flow.textContent = sprinkler['flow']
 
         /*
@@ -118,7 +118,7 @@ class View {
 
         // row to contain elements
         const li = this._wrapElements([amount, radius, flow], 'li', 'row')
-        li.id = `row-${nozzle}`
+        li.id = `row-${sprinkler.nozzle}`
         
         
         

@@ -1,0 +1,27 @@
+              :root {
+                 --cell-width: 50px;
+                 --cell-align: baseline;
+             }
+             
+             .row {
+                 display: grid;
+                 grid-template-columns: 130px 50px 50px;
+                 align-items: var(--cell-align);
+             }
+             
+             .row * {
+                 display: inline-block;
+                 max-width: var(--cell-width);
+             }
+             
+             .amount {
+                 display: grid;
+                 grid-template-columns: 50px 80px;
+                 align-items: var(--cell-align);
+             }
+             
+             .amount * {
+                 max-width: var(--cell-width);
+                 max-height: 20px;
+                 display: block;
+             }
