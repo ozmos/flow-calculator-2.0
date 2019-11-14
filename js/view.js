@@ -11,8 +11,6 @@ class View {
     this.description.textContent = 'Calculate your stations according to pressure, flow and sprinkler type'
     this.header.append(this.title, this.description)
 
-    
-
     /* form */
     
     // Legend 
@@ -20,7 +18,7 @@ class View {
     this.legendHeading.textContent = 'Select your sprinkler type, working pressure and flow rate'
 
     // Sprinkler type input
-    this.sprinklerSelect = this._createSelect('sprinkler-type', 'Sprinkler Type', 'sprinkler-type', true);
+    
     this.pressureSelect = this._createSelect('pressure', 'Pressure (Bar)', 'pressure', true )
     this.flowInput = this._createInput('number', 'flow-rate', 'Flow rate (Litres per minute)', 'flow-rate', true)
     
@@ -33,8 +31,13 @@ class View {
     this.calculatorHeading = this._createElement('h2', 'legend')
     this.calculatorHeading.textContent = 'How many of each sprinkler do you need?'
     this.sprinklers = this._createElement('ul', 'table')
-    this.calculator = this._wrapElements([this.calculatorHeading, this.sprinklers], 'fieldset')
+    this.submitButton = this._createInput('submit', 'save-button', '', '').input
+    this.submitButton.value = 'save nozzle data'
+    
+    this.calculator = this._wrapElements([this.calculatorHeading, this.sprinklers, this.submitButton], 'fieldset')
     this.form = this._wrapElements([this.formHeader, this.calculator], 'form')
+
+    /* end form */
 
     // main
     this.main = this._createElement('main')
@@ -83,15 +86,26 @@ class View {
     return wrapped ? wrapper : {'label': label, 'select': select}
   }
 
+  _removeFirstChildren(parent) {
+    while (parent.firstChild) {
+      this.parent.removeChild(parent.firstChild)
+    }
+  }
+
   /* public functions */
+
+  // fills sprinklerSelect with available sprinkler options
+  displaySprinklerSelect(data) {
+    if (this.sprinklerSelect) this._removeFirstChildren(this.sprinklerSelect)
+    this.sprinklerSelect = this._createSelect('sprinkler-type', 'Sprinkler Type', 'sprinkler-type', true)
+    this.formHeader.append(this.sprinklerSelect)
+  }
 
   // displays list of sprinklers, amount adjusters, throw and flow
   displaySprinklers(sprinklers) {
     // delete all nodes
     
-    while (this.sprinklers.firstChild) {
-      this.sprinklers.removeChild(this.sprinklers.firstChild)
-    }
+    this._removeFirstChildren(this.sprinklers)
 
     // show default message if no sprinklers available
     if (sprinklers.length === 0) {
@@ -111,22 +125,41 @@ class View {
 
         // flow counter
         const flow = this._createElement('p', 'flow')
-        flow.textContent = sprinkler['flow']
+        flow.dataset.flowRate = sprinkler['flow']
+        flow.textContent = '0'
 
         /*
         TODO: add precipiptation rates
         */
 
         // row to contain elements
-        const li = this._wrapElements([nozzleAdjust.label, nozzleAdjust.input, radius, flow], 'li', 'row')
+        const li = this._wrapElements([nozzleAdjust.label, nozzleAdjust.input, radius, flow], 'li', 'table-row')
         li.id = `row-${sprinkler.nozzle}`
-        
-        
         
         return li
       })
       
       list.forEach(el => this.sprinklers.append(el))
+     
+      // total flow
+      const total = this._createElement('span', 'cell-4')
+      total.textContent = '0'
+      total.id = 'total-flow'
+      const totalLabel = this._createElement('span', 'cell-1-3')
+      totalLabel.textContent = 'Total Flow'
+      const totalRow = this._wrapElements([totalLabel, total], 'li', 'table-row')
+      totalRow.classList.add('total')
+     
+      // stations
+      const stations = this._createElement('span', 'cell-4')
+      stations.textContent = '0'
+      stations.id = 'stations'
+      const stationsLabel = this._createElement('span', 'cell-1-3')
+      stationsLabel.textContent = 'Stations required' 
+      const stationsRow = this._wrapElements([stationsLabel, stations], 'li', 'table-row')
+      
+
+      this.sprinklers.append(totalRow, stationsRow )
     }
   }
 
