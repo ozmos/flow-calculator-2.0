@@ -6,9 +6,10 @@
 
 /* form header */
 
-#set-values {
-    display: block;
-}
+
+/* .hidden-onload {
+    display: none;
+} */
 
 
 /* table and cells */

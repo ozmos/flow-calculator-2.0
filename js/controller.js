@@ -2,14 +2,20 @@ class Controller {
   constructor(model, view) {
     this.model = model;
     this.view = view;
-
-    // render the sprinkler list
-    this.view.displaySprinklers(this.model.nozzles['3500']['1.7'])
+    this.view.displaySprinklerSelect(this.model.nozzles)
+    this.view.bindSelectSprinkler(this.handleSelectSprinkler)
+    this.model.bindSprinklerTypeChanged(this.onSprinklerTypeChanged)
   }
 
-  // event handlers
-  handleOnload() {
-    
+  // update view when model changes
+  // sprinkler type
+  onSprinklerTypeChanged = (type) => {
+    this.view.displayPressureSelect(this.model.pressure(type))
+    this.view.toggleOnloadHiddenEls(type)
+  }
+
+  handleSelectSprinkler = (type) => {
+    this.model.setSprinklerType(type)
   }
   
 }

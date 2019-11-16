@@ -18,14 +18,14 @@ class View {
     this.legendHeading.textContent = 'Select your sprinkler type, working pressure and flow rate'
 
     // Sprinkler type input
+    this.flowInput = this._createInput('number', 'flow-rate', 'Flow rate (Litres per minute)', '', true)
+    this.flowInput.min = 1
+    this.flowInput.classList.add('hidden-onload')
     
-    this.pressureSelect = this._createSelect('pressure', 'Pressure (Bar)', 'pressure', true )
-    this.flowInput = this._createInput('number', 'flow-rate', 'Flow rate (Litres per minute)', 'flow-rate', true)
-    
-    this.setButton = this._createElement('button')
+    this.setButton = this._createElement('button', 'hidden-onload')
     this.setButton.id = 'set-values'
     this.setButton.textContent = 'Set sprinkler type, pressure and flow'
-    this.formHeader = this._wrapElements([this.legendHeading, this.sprinklerSelect, this.pressureSelect, this.flowInput, this.setButton],'fieldset', 'form-header')
+    this.formHeader = this._wrapElements([this.legendHeading, this.flowInput, this.setButton],'fieldset', 'form-header')
 
     // form body - inputs for number of sprinklers and view number of stations calculated 
     this.calculatorHeading = this._createElement('h2', 'legend')
@@ -44,6 +44,9 @@ class View {
     this.main.append(this.form)
  
     this.app.append(this.header, this.main)
+
+    // hide elememnts on load
+    this.toggleOnloadHiddenEls(null)
     /* end constructor */
   }
   
@@ -66,6 +69,7 @@ class View {
   }
 
   _createInput(type, id, labelName, className, wrapped = false) {
+    this._removeElement(`${id}`)
     const input = this._createElement('input', className)
     input.id = id
     input.type = type
@@ -77,8 +81,11 @@ class View {
   }
 
   _createSelect(id, labelName, className, wrapped = false) {
+    this._removeElement(`${id}`)
     const select = this._createElement('select', className)
     select.id = id
+    const defaultOption = this._createElement('option', 'default-option')
+    select.append(defaultOption)
     const label = this._createElement('label')
     label.htmlFor = id
     label.textContent = labelName
@@ -86,25 +93,67 @@ class View {
     return wrapped ? wrapper : {'label': label, 'select': select}
   }
 
+  _removeElement(parent, selector) {
+    
+    if (this._getElement(selector)) parent.removeChild(this._getElement(selector))
+  }
+
   _removeFirstChildren(parent) {
     while (parent.firstChild) {
-      this.parent.removeChild(parent.firstChild)
+      parent.removeChild(parent.firstChild)
     }
+  }
+
+  _createOptions(data, className) {
+    return data.map(key => {
+      const option = this._createElement('option', className)
+      option.value = key
+      option.id = `option-${key}`
+      option.textContent = key.toString()
+      return option
+    })
   }
 
   /* public functions */
 
   // fills sprinklerSelect with available sprinkler options
   displaySprinklerSelect(data) {
-    if (this.sprinklerSelect) this._removeFirstChildren(this.sprinklerSelect)
+    if (this.sprinklerSelect) {this._removeFirstChildren(this.sprinklerSelect)}
     this.sprinklerSelect = this._createSelect('sprinkler-type', 'Sprinkler Type', 'sprinkler-type', true)
-    this.formHeader.append(this.sprinklerSelect)
+    const select = this.sprinklerSelect.children[1]
+    const options = this._createOptions(data, 'sprinkler-options')
+    options.forEach(op => select.append(op))
+    this.formHeader.insertBefore(this.sprinklerSelect, this.flowInput)
   }
 
+  // displays pressure options available to sprinkler set
+  displayPressureSelect(data) {
+    
+    if (this.pressureSelect) {
+      
+      this._removeFirstChildren(this.pressureSelect)
+    }
+    this.pressureSelect = this._createSelect('pressure', 'Pressure (Bar)', 'pressure', true )
+    const select = this.pressureSelect.children[1]
+    const options = this._createOptions(data, 'pressure-options')
+    options.forEach(op => select.append(op))
+    this.formHeader.insertBefore(this.pressureSelect, this.flowInput)
+  }
+
+  // toggle flowrate and set button visibility
+  toggleOnloadHiddenEls(type) {
+    let els = document.getElementsByClassName('hidden-onload')
+    els = [...els].map(el => el.style.visibility = type ? 'visible' : 'hidden')
+
+  }
+  
+    
+    
+ 
+  
   // displays list of sprinklers, amount adjusters, throw and flow
   displaySprinklers(sprinklers) {
     // delete all nodes
-    
     this._removeFirstChildren(this.sprinklers)
 
     // show default message if no sprinklers available
@@ -163,4 +212,14 @@ class View {
     }
   }
 
+ 
+
+  bindSelectSprinkler(handler) {
+    this.sprinklerSelect.addEventListener('change', e => {
+     
+      if (e.target.id === 'sprinkler-type') {
+        handler(e.target.value)
+      }
+    })
+  }
 }
