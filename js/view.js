@@ -30,7 +30,7 @@ class View {
     // form body - inputs for number of sprinklers and view number of stations calculated 
     this.calculatorHeading = this._createElement('h2', 'legend')
     this.calculatorHeading.textContent = 'How many of each sprinkler do you need?'
-    this.sprinklers = this._createElement('ul', 'table')
+    this.sprinklers = this._createElement('article', 'list')
     this.submitButton = this._createInput('submit', 'save-button', '', '').input
     this.submitButton.value = 'save nozzle data'
     
@@ -128,7 +128,7 @@ class View {
 
   // displays pressure options available to sprinkler set
   displayPressureSelect(data) {
-    
+    console.log(data)
     if (this.pressureSelect) {
       
       this._removeFirstChildren(this.pressureSelect)
@@ -147,15 +147,9 @@ class View {
 
   }
   
-    
-    
- 
-  
   // displays list of sprinklers, amount adjusters, throw and flow
-  displaySprinklers(sprinklers) {
-    // delete all nodes
-    this._removeFirstChildren(this.sprinklers)
-
+  displayCalculator(name, sprinklers, rad) {
+    
     // show default message if no sprinklers available
     if (sprinklers.length === 0) {
       const p = this.createElement('p')
@@ -163,14 +157,16 @@ class View {
       this.sprinklers.append(p);
     } else {
       // display chosen sprinklers
+      const title = this._createElement('h3')
+      title.textContent = name
       const list = sprinklers.map((sprinkler, i) => {
        
         // amount adjuster
-        const nozzleAdjust = this._createInput('number', `n-${sprinkler.nozzle}`, sprinkler.nozzle, `amount`)
+        const arcAdjust = this._createInput('number', `n-${sprinkler.arc}`, sprinkler.arc, `amount`)
 
         // throw indicator
         const radius = this._createElement('p', 'radius')
-        radius.textContent = sprinkler['radius']
+        radius.textContent = sprinkler['radius'] ? sprinkler['radius'] : rad
 
         // flow counter
         const flow = this._createElement('p', 'flow')
@@ -182,13 +178,14 @@ class View {
         */
 
         // row to contain elements
-        const li = this._wrapElements([nozzleAdjust.label, nozzleAdjust.input, radius, flow], 'li', 'table-row')
-        li.id = `row-${sprinkler.nozzle}`
+        const li = this._wrapElements([arcAdjust.label, arcAdjust.input, radius, flow], 'li', 'table-row')
+        li.id = `row-${sprinkler.arc}`
         
         return li
       })
       
-      list.forEach(el => this.sprinklers.append(el))
+      const ul = this._createElement('ul')
+      list.forEach(el => ul.append(el))
      
       // total flow
       const total = this._createElement('span', 'cell-4')
@@ -208,10 +205,29 @@ class View {
       const stationsRow = this._wrapElements([stationsLabel, stations], 'li', 'table-row')
       
 
-      this.sprinklers.append(totalRow, stationsRow )
+      ul.append(totalRow, stationsRow )
+      return this._wrapElements([title, ul], 'section', 'table')
     }
   }
 
+  // display full list of available sprinklers
+  displaySprinklers(data) {
+    // delete all nodes
+    this._removeFirstChildren(this.sprinklers)
+
+    if (this.sprinklers.length === 0) {
+      const p = this.createElement('p')
+      p.textContent = 'Set your sprinkler type, pressure and flow rate'
+      this.sprinklers.append(p);
+    } else {
+      data.forEach((obj) => {
+        
+        
+        this.sprinklers.append(this.displayCalculator(obj.title, obj.set, obj.radius))
+      })
+    }
+    
+  }
  
 
   bindSelectSprinkler(handler) {

@@ -1,6 +1,7 @@
 :root {
     --cell-width: 50px;
     --cell-align: center;
+    --primary-dark: #002200;
 }
 
 
@@ -13,6 +14,10 @@
 
 
 /* table and cells */
+
+.table {
+    border: 1px solid var(--primary-dark)
+}
 
 .table-row {
     display: grid;

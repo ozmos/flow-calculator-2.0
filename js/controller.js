@@ -2,9 +2,10 @@ class Controller {
   constructor(model, view) {
     this.model = model;
     this.view = view;
-    this.view.displaySprinklerSelect(this.model.nozzles)
+    this.view.displaySprinklerSelect(this.model.sprinklerTypes)
     this.view.bindSelectSprinkler(this.handleSelectSprinkler)
     this.model.bindSprinklerTypeChanged(this.onSprinklerTypeChanged)
+    this.view.displaySprinklers(this.model.getSprinklerSet("Stream rotor, R-VAN", "2.1"))
   }
 
   // update view when model changes
