@@ -4,12 +4,15 @@ class Model {
     this.dataset = dataset.data
   }
   
-  // update view when model changes
+  /* bind to controller */
+  
   bindSprinklerTypeChanged(callback) {
     this.onSprinklerTypeChanged = callback
   }
 
-  // update model state
+  
+  /* update model state */
+  
   setSprinklerType (type) {
     this.sprinklerType = type
     this.onSprinklerTypeChanged(this.sprinklerType)
@@ -20,12 +23,12 @@ class Model {
     // this.onPressureChanged(this.pressure)
   }
 
-  // get model data for controller
+  /* get model data for controller */
   get sprinklerTypes () {
     return Object.keys(this.dataset)
   }
 
-  pressure (type) {
+  getPressure (type) {
     const pressure = this.dataset[type].pressure 
     return pressure
   }
