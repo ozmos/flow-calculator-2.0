@@ -12,9 +12,10 @@ class View {
   this.legendHeading.textContent = 'Select your sprinkler type, working pressure and flow rate'
 
   // Sprinkler type input
-  this.flowInput = U.createInput('number', 'flow-rate', 'Flow rate (Litres per minute)', '', true)
+  this.flowInput = U.createInput('number', 'flow-rate', 'Flow rate (Litres per minute)', '', true, 'required')
   this.flowInput.min = 1
   this.flowInput.classList.add('hidden-onload')
+ 
   
   this.setButton = U.createElement('button', 'hidden-onload')
   this.setButton.id = 'set-values'
@@ -53,7 +54,7 @@ class View {
   // fills sprinklerSelect with available sprinkler options
   displaySprinklerSelect(data) {
     if (this.sprinklerSelect) {U.removeFirstChildren(this.sprinklerSelect)}
-    this.sprinklerSelect = U.createSelect('sprinkler-type', 'Sprinkler Type', 'sprinkler-type', true)
+    this.sprinklerSelect = U.createSelect('sprinkler-type', 'Sprinkler Type', 'sprinkler-type', true, 'required')
     const select = this.sprinklerSelect.children[1]
     const options = U.createOptions(data, 'sprinkler-options')
     options.forEach(op => select.append(op))
@@ -67,7 +68,7 @@ class View {
       
       U.removeFirstChildren(this.pressureSelect)
     }
-    this.pressureSelect = U.createSelect('pressure', 'Pressure (Bar)', 'pressure', true )
+    this.pressureSelect = U.createSelect('pressure', 'Pressure (Bar)', 'pressure', true, 'required' )
     const select = this.pressureSelect.children[1]
     const options = U.createOptions(data, 'pressure-options')
     options.forEach(op => select.append(op))
@@ -171,7 +172,15 @@ class View {
     })
   }
 
-  bindSelectPressure(handler) {
+  bindSubmitPressureFlow(handler) {
+    this.setButton.addEventListener('click', e => {
+      const flow = parseInt(U.getElement('#flow-rate').value, 10)
+      const pressure = U.getElement('#pressure').value
+      e.preventDefault()
+      handler(pressure, flow)
+    })
+  }
+  /* bindSelectPressure(handler) {
     this.pressureSelect.addEventListener('change', e => {
       if (e.target.id === 'pressure') {
         handler(e.target.value)
@@ -186,5 +195,5 @@ class View {
         handler(flow)
       }
     })
-  }
+  } */
 }

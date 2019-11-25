@@ -19,11 +19,12 @@ class U {
     return wrapper
   }
 
-  static createInput(type, id, labelName, className, wrapped = false) {
+  static createInput(type, id, labelName, className, wrapped = false, required = false) {
     this.removeElement(`${id}`)
     const input = this.createElement('input', className)
     input.id = id
     input.type = type
+    input.required = required
     const label = this.createElement('label')
     label.htmlFor = id
     label.textContent = labelName
@@ -31,10 +32,11 @@ class U {
     return wrapped ? wrapper : {'label': label, 'input': input}
   }
 
-  static createSelect(id, labelName, className, wrapped = false) {
+  static createSelect(id, labelName, className, wrapped = false, required = false) {
     this.removeElement(`${id}`)
     const select = this.createElement('select', className)
     select.id = id
+    select.required = required
     const defaultOption = this.createElement('option', 'default-option')
     select.append(defaultOption)
     const label = this.createElement('label')
