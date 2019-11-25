@@ -139,6 +139,7 @@ class View {
 
   // display full list of available sprinklers
   displaySprinklers(data) {
+    U.removeFirstChildren(this.calculator)
     this.sprinklers = U.createElement('article', 'list')
     this.submitButton = U.createInput('submit', 'save-button', '', '').input
     this.submitButton.value = 'save nozzle data'
@@ -172,7 +173,18 @@ class View {
 
   bindSelectPressure(handler) {
     this.pressureSelect.addEventListener('change', e => {
-      
+      if (e.target.id === 'pressure') {
+        handler(e.target.value)
+      }    
+    })
+  }
+
+  bindFlowInput(handler) {
+    this.flowInput.addEventListener('change', e => {
+      if (e.target.id === 'flow-rate') {
+        const flow = parseInt(e.target.value, 10)
+        handler(flow)
+      }
     })
   }
 }

@@ -10,6 +10,9 @@ class Model {
     this.onSprinklerTypeChanged = callback
   }
 
+  bindPressureChanged(callback) {
+    this.onPressureChanged = callback
+  }
   
   /* update model state */
   
@@ -20,7 +23,12 @@ class Model {
 
   setPressure (pressure) {
     this.pressure = pressure
-    // this.onPressureChanged(this.pressure)
+    this.onPressureChanged(this.sprinklerType, this.pressure)
+  }
+
+  setFlow (flow) {
+    this.flow = flow
+    // this.onFlowChanged()
   }
 
   /* get model data for controller */
