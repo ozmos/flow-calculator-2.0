@@ -26,10 +26,11 @@ class Controller {
    
   onPressureFlowChanged = (type, pressure) => {
     this.view.displaySprinklers(this.model.getSprinklerSet(type, pressure))
-    
+    this.view.bindAmountInput(this.handleAmountInput)
   }
 
-  // event handlers
+  /* event handlers */
+  // fires when user selects sprinkler type, updates current sprinkler type
   handleSelectSprinkler = (type) => {
     this.model.setSprinklerType(type)
   }
@@ -41,10 +42,15 @@ class Controller {
   handleFlowInput = flow => {
     this.model.setFlow(flow)
   } */
-
+  // fires when user clicks "set sprinkler type, pressure and flow" button, updates current pressure and available flow, triggers onPressureFlowChanged method in model
   handleSubmitPressureFlow = (pressure, flow) => {
     this.model.setPressure(pressure)
-    this.model.setFlow(flow)
+    this.model.setFlowRate(flow)
+  }
+
+  // 
+  handleAmountInput = (nozzle, amount, index) => {
+    this.model.setAmount(nozzle, amount, index)
   }
 }
 

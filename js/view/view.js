@@ -63,7 +63,6 @@ class View {
 
   // displays pressure options available to sprinkler set
   displayPressureSelect(data) {
-    console.log(data)
     if (this.pressureSelect) {
       
       U.removeFirstChildren(this.pressureSelect)
@@ -90,7 +89,9 @@ class View {
       const list = sprinklers.map((sprinkler, i) => {
        
         // amount adjuster
-        const arcAdjust = U.createInput('number', `n-${sprinkler.arc}`, sprinkler.arc, `amount`)
+        const arcAdjust = U.createInput('number', `${name}-${sprinkler.arc}`, sprinkler.arc, `amount`)
+        arcAdjust.input.value = sprinkler.amount
+        arcAdjust.input.dataset.index = i
 
         // throw indicator
         const radius = U.createElement('p', 'radius')
@@ -98,8 +99,8 @@ class View {
 
         // flow counter
         const flow = U.createElement('p', 'flow')
-        flow.dataset.flowRate = sprinkler['flow']
-        flow.textContent = '0'
+        flow.dataset.flowRate = sprinkler['flow-rate']
+        flow.textContent = sprinkler.totalFlow ? sprinkler.totalFlow.toFixed(2) : 0
 
         /*
         TODO: add precipiptation rates
@@ -107,6 +108,8 @@ class View {
 
         // row to contain elements
         const li = U.wrapElements([arcAdjust.label, arcAdjust.input, radius, flow], 'li', 'table-row')
+        li.dataset.name = name
+        li.classList.add(`nozzle`)
         li.id = `row-${sprinkler.arc}`
         
         return li
@@ -178,6 +181,18 @@ class View {
       const pressure = U.getElement('#pressure').value
       e.preventDefault()
       handler(pressure, flow)
+    })
+  }
+
+  bindAmountInput(handler) {
+    const nozzles = U.getElements('.nozzle')
+    
+    nozzles.forEach(li => {
+      li.addEventListener('change', e => {
+        if (e.target.classList.contains('amount')) {
+          handler(li.dataset.name, e.target.value, e.target.dataset.index)
+        }
+      })
     })
   }
   /* bindSelectPressure(handler) {

@@ -13,6 +13,9 @@ class U {
     return document.querySelector(selector)
   }
 
+  static getElements(selector) {
+    return Array.from(document.querySelectorAll(selector))
+  }
   static wrapElements(elements, tag, className) {
     const wrapper = this.createElement(tag, className)
     wrapper.append(...elements)
