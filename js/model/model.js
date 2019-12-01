@@ -37,20 +37,47 @@ class Model {
     this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index].amount = amount
    
     this.calculateSingleFlow(nozzle, index)
+    this.calculateSmallTotal(nozzle)
     this.onPressureFlowChanged(this.sprinklerType, this.pressure)
   }
 
   // calculations
   calculateSingleFlow(nozzle, index) {
-   
     const amount = this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index].amount
+    // new object property: totalFlow to each nozzle type
     this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index].totalFlow = amount * this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index]['flow-rate']
-    console.log(this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index].totalFlow)
+  }
+
+  calculateSmallTotal(nozzle) {
+    const nozzleSet = this.dataset[this.sprinklerType].nozzles[nozzle]
+    const totalFlows = nozzleSet[this.pressure]
+    .map(noz => noz.totalFlow)
+    .filter(noz => noz)
+    const smallTotal = totalFlows
+    .reduce((a, b) => {
+      return a + b
+    }, 0 )
+    .toFixed(2)
+    // new object property for each nozzle type called 'subtotal'
+    this.dataset[this.sprinklerType].nozzles[nozzle].subTotal = smallTotal
+  }
+
+  calculateTotal() {
+    const nozzleSet = this.dataset[this.sprinklerType].nozzles
+    const subTotals = []
     
+    for (const noz in nozzleSet) {
+      
+      if (nozzleSet[noz].subTotal) subTotals.push(nozzleSet[noz].subTotal) 
+      
+    }
+   
+    return subTotals.length > 0 ? subTotals.reduce((a, b) => a + b) : 0 
   }
 
   // reset flows method group
   _helpResetNozzleNumbers (arr) {
+    // initializes object property: amount to 0
     arr = arr.map(obj => {
       return {
         'arc' : obj.arc,
@@ -102,12 +129,15 @@ class Model {
 
   getSprinklerSet(family, pressure) {
     const sprinklerSet = this.dataset[family].nozzles
+    
     const sprinklerKeys = Object.keys(sprinklerSet)
     return sprinklerKeys.map((obj, i) => {
+
       const set = sprinklerSet[obj][pressure]
       const radius = sprinklerSet[obj].radius ? sprinklerSet[obj].radius[pressure] : set.radius
+      const subTotal = sprinklerSet[obj].subTotal ? sprinklerSet[obj].subTotal : 0
      
-      return {'title' : obj, 'radius' : radius, 'set' : set}
+      return {'title' : obj, 'radius' : radius, 'set' : set, 'subTotal' : subTotal, }
     })
   }
 

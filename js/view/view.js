@@ -75,7 +75,7 @@ class View {
   }
 
   // displays list of sprinklers, amount adjusters, throw and flow
-  displayCalculator(name, sprinklers, rad) {
+  displayCalculator(name, sprinklers, rad, subTotal) {
     
     // show default message if no sprinklers available
     if (sprinklers.length === 0) {
@@ -120,7 +120,7 @@ class View {
      
       // total flow
       const total = U.createElement('span', 'cell-4')
-      total.textContent = '0'
+      total.textContent = subTotal
       total.id = 'total-flow'
       const totalLabel = U.createElement('span', 'cell-1-3')
       totalLabel.textContent = 'Total Flow'
@@ -142,7 +142,7 @@ class View {
   }
 
   // display full list of available sprinklers
-  displaySprinklers(data) {
+  displaySprinklers(data, total) {
     U.removeFirstChildren(this.calculator)
     this.sprinklers = U.createElement('article', 'list')
     this.submitButton = U.createInput('submit', 'save-button', '', '').input
@@ -158,10 +158,13 @@ class View {
       data.forEach((obj) => {
         
         
-        this.sprinklers.append(this.displayCalculator(obj.title, obj.set, obj.radius))
+        this.sprinklers.append(this.displayCalculator(obj.title, obj.set, obj.radius, obj.subTotal))
       })
     }
-    this.calculator.append(this.sprinklers, this.submitButton)
+
+    this.total = U.createElement('p')
+    this.total.textContent = total
+    this.calculator.append(this.sprinklers, this.total, this.submitButton)
     
   }
  

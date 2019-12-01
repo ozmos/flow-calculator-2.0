@@ -25,7 +25,8 @@ class Controller {
   }
    
   onPressureFlowChanged = (type, pressure) => {
-    this.view.displaySprinklers(this.model.getSprinklerSet(type, pressure))
+    this.view.displaySprinklers(this.model.getSprinklerSet(type, pressure), this.model.calculateTotal())
+    // TODO: create separate function which doesn't bind function every time called
     this.view.bindAmountInput(this.handleAmountInput)
   }
 
