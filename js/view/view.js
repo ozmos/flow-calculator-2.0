@@ -142,7 +142,7 @@ class View {
   }
 
   // display full list of available sprinklers
-  displaySprinklers(data, total) {
+  displaySprinklers(data, total, stations) {
     U.removeFirstChildren(this.calculator)
     this.sprinklers = U.createElement('article', 'list')
     this.submitButton = U.createInput('submit', 'save-button', '', '').input
@@ -161,11 +161,23 @@ class View {
         this.sprinklers.append(this.displayCalculator(obj.title, obj.set, obj.radius, obj.subTotal))
       })
     }
-
-    this.total = U.createElement('p')
-    this.total.textContent = total
-    this.calculator.append(this.sprinklers, this.total, this.submitButton)
     
+    // grand total flow
+    this.grandTotal = U.createElement('span', 'cell-4')
+    this.grandTotal.textContent = total
+    const totalLabel = U.createElement('span', 'cell-1-3')
+    totalLabel.textContent = 'Total Flow'
+    const totalRow = U.wrapElements([totalLabel, this.grandTotal], 'li', 'table-row')
+    
+    // stations required
+    this.stations = U.createElement('span', 'cell-4')
+    this.stations.textContent = stations
+    this.stations.id = 'stations'
+    const stationsLabel = U.createElement('span', 'cell-1-3')
+    stationsLabel.textContent = 'Stations required' 
+    const stationsRow = U.wrapElements([stationsLabel, this.stations], 'li', 'table-row')
+
+      this.calculator.append(this.sprinklers, totalRow, stationsRow, this.submitButton)
   }
  
   /* event handlers */

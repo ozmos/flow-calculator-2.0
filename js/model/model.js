@@ -7,7 +7,6 @@ class Model {
     this.dataset = dataset.data
     this.resetAllNozzleNumbers()
     //temp
-    
   }
   
   /* bind to controller */
@@ -69,10 +68,14 @@ class Model {
     for (const noz in nozzleSet) {
       
       if (nozzleSet[noz].subTotal) subTotals.push(nozzleSet[noz].subTotal) 
-      
+      console.log(nozzleSet[noz].subTotal)
     }
    
-    return subTotals.length > 0 ? subTotals.reduce((a, b) => a + b) : 0 
+    return subTotals.length > 0 ? subTotals.reduce((a, b) => parseFloat(a) + parseFloat(b)) : 0 
+  }
+
+  calculateStations() {
+    return Math.ceil(this.calculateTotal()/this.flowRate) || 0
   }
 
   // reset flows method group
