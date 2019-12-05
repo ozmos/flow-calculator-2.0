@@ -13,6 +13,15 @@
 } */
 
 
+/* calculators */
+
+.list {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+}
+
+
 /* table and cells */
 
 .table {

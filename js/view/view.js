@@ -43,7 +43,7 @@ class View {
     /* end constructor */
   }
 
-  /* public functions */
+  
   // toggle flowrate and set button visibility
   toggleOnloadHiddenEls(type) {
     let els = document.getElementsByClassName('hidden-onload')
@@ -61,7 +61,7 @@ class View {
     this.formHeader.insertBefore(this.sprinklerSelect, this.flowInput)
   }
 
-  // displays pressure options available to sprinkler set
+  // displays pressure options availgit able to sprinkler set
   displayPressureSelect(data) {
     if (this.pressureSelect) {
       
@@ -156,8 +156,6 @@ class View {
       this.sprinklers.append(p);
     } else {
       data.forEach((obj) => {
-        
-        
         this.sprinklers.append(this.displayCalculator(obj.title, obj.set, obj.radius, obj.subTotal))
       })
     }
@@ -176,8 +174,9 @@ class View {
     const stationsLabel = U.createElement('span', 'cell-1-3')
     stationsLabel.textContent = 'Stations required' 
     const stationsRow = U.wrapElements([stationsLabel, this.stations], 'li', 'table-row')
+    const totalWrapper = U.wrapElements([totalRow, stationsRow], 'ul', 'list')
 
-      this.calculator.append(this.sprinklers, totalRow, stationsRow, this.submitButton)
+      this.calculator.append(this.sprinklers, totalWrapper, this.submitButton)
   }
  
   /* event handlers */
