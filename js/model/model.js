@@ -5,8 +5,7 @@ add submit buttons to each initial data selection
 class Model {
   constructor(dataset) {
     this.dataset = dataset.data
-    /* this.resetAllNozzleNumbers() */
-    //temp
+    
   }
   
   /* bind to controller */
@@ -19,6 +18,9 @@ class Model {
     this.onNozzleSetChanged = callback
   }
   
+  bindAmountChanged(callback) {
+    this.onAmountChanged = callback
+  }
   
 
   /* update model state */
@@ -120,7 +122,7 @@ class Model {
     
     for (const noz in sprinklerSet) {
       nozzleSet.nozzles[noz] = {}
-      if (nozzleSet.nozzles[noz].radius) nozzleSet.nozzles[noz].radius = sprinklerSet[noz].radius[pressure]
+      if (sprinklerSet[noz].radius) nozzleSet.nozzles[noz].radius = sprinklerSet[noz].radius[pressure]
       nozzleSet.nozzles[noz].arcs = sprinklerSet[noz][pressure]
       nozzleSet.nozzles[noz].subTotal = 0
     }

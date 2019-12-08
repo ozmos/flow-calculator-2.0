@@ -10,6 +10,7 @@ class Controller {
     /* bind model methods */
     this.model.bindSprinklerTypeChanged(this.onSprinklerTypeChanged)
     this.model.bindNozzleSetChanged(this.onNozzleSetChanged)
+  
     /*  */
   }
 
@@ -30,6 +31,7 @@ class Controller {
     this.view.bindAmountInput(this.handleAmountInput)
   }
 
+  
   /* event handlers */
   // fires when user selects sprinkler type, updates current sprinkler type
   handleSelectSprinkler = (type) => {
