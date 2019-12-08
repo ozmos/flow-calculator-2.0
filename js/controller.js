@@ -9,7 +9,7 @@ class Controller {
     
     /* bind model methods */
     this.model.bindSprinklerTypeChanged(this.onSprinklerTypeChanged)
-    this.model.bindPressureFlowChanged(this.onPressureFlowChanged)
+    this.model.bindNozzleSetChanged(this.onNozzleSetChanged)
     /*  */
   }
 
@@ -24,8 +24,8 @@ class Controller {
     this.view.bindSubmitPressureFlow(this.handleSubmitPressureFlow)
   }
    
-  onPressureFlowChanged = (type, pressure) => {
-    this.view.displaySprinklers(this.model.getSprinklerSet(type, pressure), this.model.calculateTotal(), this.model.calculateStations())
+  onNozzleSetChanged = () => {
+    this.view.displaySprinklers(this.model.getNozzleSet(), this.model.calculateTotal(), this.model.calculateStations())
     // TODO: create separate function which doesn't bind function every time called
     this.view.bindAmountInput(this.handleAmountInput)
   }
@@ -45,7 +45,7 @@ class Controller {
   } */
   // fires when user clicks "set sprinkler type, pressure and flow" button, updates current pressure and available flow, triggers onPressureFlowChanged method in model
   handleSubmitPressureFlow = (pressure, flow) => {
-    this.model.setPressure(pressure)
+    this.model.setNozzleSet(this.model.sprinklerType, pressure)
     this.model.setFlowRate(flow)
   }
 

@@ -5,7 +5,7 @@ add submit buttons to each initial data selection
 class Model {
   constructor(dataset) {
     this.dataset = dataset.data
-    this.resetAllNozzleNumbers()
+    /* this.resetAllNozzleNumbers() */
     //temp
   }
   
@@ -15,10 +15,12 @@ class Model {
     this.onSprinklerTypeChanged = callback
   }
 
-  bindPressureFlowChanged(callback) {
-    this.onPressureFlowChanged = callback
+  bindNozzleSetChanged(callback) {
+    this.onNozzleSetChanged = callback
   }
   
+  
+
   /* update model state */
   
   setSprinklerType (type) {
@@ -27,29 +29,33 @@ class Model {
 
   }
   
-  setPressure (pressure) {
-    this.pressure = pressure
-    this.onPressureFlowChanged(this.sprinklerType, this.pressure)
+  setNozzleSet (family = this.sprinklerType, pressure, nozzleSet) {
+    this.nozzleSet = nozzleSet || this._newNozzleSet(family, pressure)
+    this.onNozzleSetChanged()
+  }
+
+  setFlowRate (flow) {
+    this.flowRate = flow
   }
 
   setAmount (nozzle, amount, index) {
-    this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index].amount = amount
+    this.nozzleSet.nozzles[nozzle].arcs[index].amount = amount
    
     this.calculateSingleFlow(nozzle, index)
     this.calculateSmallTotal(nozzle)
-    this.onPressureFlowChanged(this.sprinklerType, this.pressure)
+    this.onNozzleSetChanged()
   }
 
-  // calculations
+  /* calculations */
   calculateSingleFlow(nozzle, index) {
-    const amount = this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index].amount
+    const amount = this.nozzleSet.nozzles[nozzle].arcs[index].amount
     // new object property: totalFlow to each nozzle type
-    this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index].totalFlow = amount * this.dataset[this.sprinklerType].nozzles[nozzle][this.pressure][index]['flow-rate']
+    this.nozzleSet.nozzles[nozzle].arcs[index].totalFlow = amount * this.nozzleSet.nozzles[nozzle].arcs[index]['flow-rate']
   }
 
   calculateSmallTotal(nozzle) {
-    const nozzleSet = this.dataset[this.sprinklerType].nozzles[nozzle]
-    const totalFlows = nozzleSet[this.pressure]
+    const nozzleSet = this.nozzleSet.nozzles[nozzle]
+    const totalFlows = nozzleSet.arcs
     .map(noz => noz.totalFlow)
     .filter(noz => noz)
     const smallTotal = totalFlows
@@ -58,17 +64,17 @@ class Model {
     }, 0 )
     .toFixed(2)
     // new object property for each nozzle type called 'subtotal'
-    this.dataset[this.sprinklerType].nozzles[nozzle].subTotal = smallTotal
+    this.nozzleSet.nozzles[nozzle].subTotal = smallTotal
   }
 
   calculateTotal() {
-    const nozzleSet = this.dataset[this.sprinklerType].nozzles
+    const nozzleSet = this.nozzleSet.nozzles
     const subTotals = []
     
     for (const noz in nozzleSet) {
       
       if (nozzleSet[noz].subTotal) subTotals.push(nozzleSet[noz].subTotal) 
-      console.log(nozzleSet[noz].subTotal)
+    
     }
    
     return subTotals.length > 0 ? subTotals.reduce((a, b) => parseFloat(a) + parseFloat(b)) : 0 
@@ -78,45 +84,7 @@ class Model {
     return Math.ceil(this.calculateTotal()/this.flowRate) || 0
   }
 
-  // reset flows method group
-  _helpResetNozzleNumbers (arr) {
-    // initializes object property: amount to 0
-    arr = arr.map(obj => {
-      return {
-        'arc' : obj.arc,
-        'radius' : obj.radius,
-        'flow-rate' : obj['flow-rate'],
-        'amount' : 0
-      }
-    })
-    return arr
-  }
-
-  resetAllNozzleNumbers () {
-    const dataset = this.dataset
-    for (const fam in dataset) {
-      for (const obj in dataset[fam].nozzles) {
-        for (const type in dataset[fam].nozzles[obj]) {
-          const nozzleSet = dataset[fam].nozzles[obj][type];
-        
-          if (Array.isArray(nozzleSet)) {
-            dataset[fam].nozzles[obj][type] = this._helpResetNozzleNumbers(nozzleSet)
-          }
-        }
-        
-      }
-    }
-    
-  }
-
-  // end resetFlows method group
-  setFlowRate (flow) {
-  
-    this.flowRate = flow
-    // this.onFlowChanged()
-  }
-
-  /* get model data for controller */
+  /* get model data for the controller */
   get sprinklerTypes () {
     return Object.keys(this.dataset)
   }
@@ -126,27 +94,37 @@ class Model {
     return pressure
   }
 
-  getSprinklersByPressure(family, type, pressure) {
-    return this.dataset[family].nozzles[type][pressure]
-  }
-
-  getSprinklerSet(family, pressure) {
-    const sprinklerSet = this.dataset[family].nozzles
+  getNozzleSet() {
+    const nozzleSet = this.nozzleSet.nozzles
     
-    const sprinklerKeys = Object.keys(sprinklerSet)
-    return sprinklerKeys.map((obj, i) => {
+    const nozzleKeys = Object.keys(nozzleSet)
+    return nozzleKeys.map((obj, i) => {
 
-      const set = sprinklerSet[obj][pressure]
-      const radius = sprinklerSet[obj].radius ? sprinklerSet[obj].radius[pressure] : set.radius
-      const subTotal = sprinklerSet[obj].subTotal ? sprinklerSet[obj].subTotal : 0
+      const set = nozzleSet[obj].arcs
+      const radius = nozzleSet[obj].radius ? nozzleSet[obj].radius : set.radius
+      const subTotal = nozzleSet[obj].subTotal ? nozzleSet[obj].subTotal : 0
      
       return {'title' : obj, 'radius' : radius, 'set' : set, 'subTotal' : subTotal, }
     })
   }
 
-  getRadius(family, type, pressure) {
-    return this.dataset[family].nozzles[type].radius[pressure]
+  /* private functions */
+  // create new nozzleset based on sprinkler family and pressure
+  _newNozzleSet(family, pressure) {
+    const nozzleSet = {
+      'family': family,
+      'pressure': pressure,
+      'nozzles' : {}
+    }
+    const sprinklerSet = this.dataset[family].nozzles
+    
+    for (const noz in sprinklerSet) {
+      nozzleSet.nozzles[noz] = {}
+      if (nozzleSet.nozzles[noz].radius) nozzleSet.nozzles[noz].radius = sprinklerSet[noz].radius[pressure]
+      nozzleSet.nozzles[noz].arcs = sprinklerSet[noz][pressure]
+      nozzleSet.nozzles[noz].subTotal = 0
+    }
+    return nozzleSet
   }
-
   
 }
