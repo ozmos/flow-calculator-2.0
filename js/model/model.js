@@ -5,9 +5,20 @@ add submit buttons to each initial data selection
 class Model {
   constructor(dataset) {
     this.dataset = dataset.data
-    
+    this.savedNozzleSets = JSON.parse(localStorage.getItem('savedNozzleSets')) || []
   }
   
+  /* local storage methods */
+  // commit to local storage
+  _commit() {
+    localStorage.setItem('savedNozzleSets', JSON.stringify(this.savedNozzleSets))
+  }
+  
+  saveNozzleSet(name) {
+    this.nozzleSet.name = name
+    this.savedNozzleSets.push(this.nozzleSet)
+    this._commit()
+  }
   /* bind to controller */
   
   bindSprinklerTypeChanged(callback) {
@@ -31,13 +42,9 @@ class Model {
 
   }
   
-  setNozzleSet (family = this.sprinklerType, pressure, nozzleSet) {
-    this.nozzleSet = nozzleSet || this._newNozzleSet(family, pressure)
+  setNozzleSet (family = this.sprinklerType, pressure, flow = 0, nozzleSet ) {
+    this.nozzleSet = nozzleSet || this._newNozzleSet(family, pressure, flow)
     this.onNozzleSetChanged()
-  }
-
-  setFlowRate (flow) {
-    this.flowRate = flow
   }
 
   setAmount (nozzle, amount, index) {
@@ -83,7 +90,7 @@ class Model {
   }
 
   calculateStations() {
-    return Math.ceil(this.calculateTotal()/this.flowRate) || 0
+    return Math.ceil(this.calculateTotal()/this.nozzleSet.flowRate) || 0
   }
 
   /* get model data for the controller */
@@ -111,11 +118,13 @@ class Model {
   }
 
   /* private functions */
+  
   // create new nozzleset based on sprinkler family and pressure
-  _newNozzleSet(family, pressure) {
+  _newNozzleSet(family, pressure, flow) {
     const nozzleSet = {
       'family': family,
       'pressure': pressure,
+      'flowRate' : flow,
       'nozzles' : {}
     }
     const sprinklerSet = this.dataset[family].nozzles

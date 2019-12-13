@@ -5,13 +5,11 @@ class Controller {
     /* bind view methods */
     this.view.displaySprinklerSelect(this.model.sprinklerTypes)
     this.view.bindSelectSprinkler(this.handleSelectSprinkler)
-    
+    this.view.bindSave(this.handleSave)
     
     /* bind model methods */
     this.model.bindSprinklerTypeChanged(this.onSprinklerTypeChanged)
     this.model.bindNozzleSetChanged(this.onNozzleSetChanged)
-  
-    /*  */
   }
 
   // update view when model changes
@@ -19,9 +17,7 @@ class Controller {
   onSprinklerTypeChanged = (type) => {
     this.view.displayPressureSelect(this.model.getPressure(type))
     this.view.toggleOnloadHiddenEls(type)
-    // add event listeners once elements have loaded
-    /* this.view.bindSelectPressure(this.handleSelectPressure)
-    this.view.bindFlowInput(this.handleFlowInput) */
+    
     this.view.bindSubmitPressureFlow(this.handleSubmitPressureFlow)
   }
    
@@ -29,6 +25,7 @@ class Controller {
     this.view.displaySprinklers(this.model.getNozzleSet(), this.model.calculateTotal(), this.model.calculateStations())
     // TODO: create separate function which doesn't bind function every time called
     this.view.bindAmountInput(this.handleAmountInput)
+   
   }
 
   
@@ -37,23 +34,22 @@ class Controller {
   handleSelectSprinkler = (type) => {
     this.model.setSprinklerType(type)
   }
-/* 
-  handleSelectPressure = pressure => {
-    this.model.setPressure(pressure)
-  }
-  
-  handleFlowInput = flow => {
-    this.model.setFlow(flow)
-  } */
+
   // fires when user clicks "set sprinkler type, pressure and flow" button, updates current pressure and available flow, triggers onPressureFlowChanged method in model
   handleSubmitPressureFlow = (pressure, flow) => {
-    this.model.setNozzleSet(this.model.sprinklerType, pressure)
-    this.model.setFlowRate(flow)
+    this.model.setNozzleSet(this.model.sprinklerType, pressure, flow)
+    
+    /* this.model.setFlowRate(flow) */
   }
 
-  // 
+  // adjust individual sprinkler amounts
   handleAmountInput = (nozzle, amount, index) => {
     this.model.setAmount(nozzle, amount, index)
+  }
+
+  // save nozzle set to local storage
+  handleSave = (name) => {
+    this.model.saveNozzleSet(name)
   }
 }
 

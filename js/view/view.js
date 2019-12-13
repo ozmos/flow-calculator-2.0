@@ -127,16 +127,7 @@ class View {
       const totalRow = U.wrapElements([totalLabel, total], 'li', 'table-row')
       totalRow.classList.add('total')
      
-      // stations
-      const stations = U.createElement('span', 'cell-4')
-      stations.textContent = '0'
-      stations.id = 'stations'
-      const stationsLabel = U.createElement('span', 'cell-1-3')
-      stationsLabel.textContent = 'Stations required' 
-      const stationsRow = U.wrapElements([stationsLabel, stations], 'li', 'table-row')
-      
-
-      ul.append(totalRow, stationsRow )
+      ul.append(totalRow)
       return U.wrapElements([title, ul], 'section', 'table')
     }
   }
@@ -180,6 +171,7 @@ class View {
   }
  
   /* event handlers */
+  // sprinkler select
   bindSelectSprinkler(handler) {
     this.sprinklerSelect.addEventListener('change', e => {
      
@@ -189,6 +181,7 @@ class View {
     })
   }
 
+  // creates new nozzleSet in model which then triggers view to render it in view
   bindSubmitPressureFlow(handler) {
     this.setButton.addEventListener('click', e => {
       const flow = parseInt(U.getElement('#flow-rate').value, 10)
@@ -198,6 +191,7 @@ class View {
     })
   }
 
+  // triggers when individual sprinkler number is adjusted
   bindAmountInput(handler) {
     const nozzles = U.getElements('.nozzle')
     
@@ -209,20 +203,14 @@ class View {
       })
     })
   }
-  /* bindSelectPressure(handler) {
-    this.pressureSelect.addEventListener('change', e => {
-      if (e.target.id === 'pressure') {
-        handler(e.target.value)
-      }    
-    })
+  
+  // to save current nozzleSet to local storage
+  bindSave(handler) {
+    this.form.addEventListener('submit', e => {
+      console.log(e)
+      e.preventDefault()
+      handler('test')
+      return false;
+    }, false)
   }
-
-  bindFlowInput(handler) {
-    this.flowInput.addEventListener('change', e => {
-      if (e.target.id === 'flow-rate') {
-        const flow = parseInt(e.target.value, 10)
-        handler(flow)
-      }
-    })
-  } */
 }
