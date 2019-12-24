@@ -1,26 +1,31 @@
 class View {
-  constructor(header) {
+  constructor(header, savedNozzles) {
     // root
     this.app = U.getElement('#root')
 
     /* header */
-    this.header = header.header
+    this.header = header
+
+    /* saved nozzles UI */
+    this.savedNozzles = savedNozzles
     /* form */
       // Legend
   
   this.legendHeading = U.createElement('h2', 'legend')
   this.legendHeading.textContent = 'Select your sprinkler type, working pressure and flow rate'
 
-  // Sprinkler type input
-  this.flowInput = U.createInput('number', 'flow-rate', 'Flow rate (Litres per minute)', '', true, 'required')
+  // flow input
+  this.flowInput = U.createInput('number', 'flow-rate', 'Flow rate (Litres per minute)','', true, 'required')
   this.flowInput.min = 1
   this.flowInput.classList.add('hidden-onload')
- 
-  
+  // name for set input
+  this.nameInput = U.createInput('text', 'name', 'Name for nozzleset', '', true, true )
+  this.nameInput.classList.add('hidden-onload')
+  // set button
   this.setButton = U.createElement('button', 'hidden-onload')
   this.setButton.id = 'set-values'
   this.setButton.textContent = 'Set sprinkler type, pressure and flow'
-  this.formHeader = U.wrapElements([this.legendHeading, this.flowInput, this.setButton],'fieldset', 'form-header')
+  this.formHeader = U.wrapElements([this.legendHeading, this.flowInput, this.nameInput, this.setButton],'fieldset', 'form-header')
 
   // form body - inputs for number of sprinklers and view number of stations calculated 
   this.calculatorHeading = U.createElement('h2', 'legend')
@@ -34,23 +39,19 @@ class View {
 
     // main
     this.main = U.createElement('main')
-    this.main.append(this.form)
+    this.main.append(this.form, this.savedNozzles.savedNozzlesContainer)
  
-    this.app.append(this.header, this.main)
+    this.app.append(this.header.header, this.main)
 
     // hide elememnts on load
-    this.toggleOnloadHiddenEls(null)
+    U.toggleOnloadHiddenEls(null)
     /* end constructor */
   }
 
   
-  // toggle flowrate and set button visibility
-  toggleOnloadHiddenEls(type) {
-    let els = document.getElementsByClassName('hidden-onload')
-    els = [...els].map(el => el.style.visibility = type ? 'visible' : 'hidden')
-
-  }
   
+  
+  /* create and display UI elements */
   // fills sprinklerSelect with available sprinkler options
   displaySprinklerSelect(data) {
     if (this.sprinklerSelect) {U.removeFirstChildren(this.sprinklerSelect)}
@@ -136,8 +137,9 @@ class View {
   displaySprinklers(data, total, stations) {
     U.removeFirstChildren(this.calculator)
     this.sprinklers = U.createElement('article', 'list')
-    this.submitButton = U.createInput('submit', 'save-button', '', '').input
-    this.submitButton.value = 'save nozzle data'
+    // save button
+    this.saveButton = U.createInput('submit', 'save-button').input
+    this.saveButton.value = 'save nozzle data'
     // delete all nodes
     U.removeFirstChildren(this.sprinklers)
 
@@ -167,9 +169,13 @@ class View {
     const stationsRow = U.wrapElements([stationsLabel, this.stations], 'li', 'table-row')
     const totalWrapper = U.wrapElements([totalRow, stationsRow], 'ul', 'list')
 
-      this.calculator.append(this.sprinklers, totalWrapper, this.submitButton)
+      this.calculator.append(this.sprinklers, totalWrapper, this.saveButton)
   }
  
+  displaySavedNozzlesUI (data) {
+    this.savedNozzles.displaySavedNozzles(data)
+   
+  }
   /* event handlers */
   // sprinkler select
   bindSelectSprinkler(handler) {
@@ -203,13 +209,22 @@ class View {
       })
     })
   }
+
+  // to display UI to view, edit and delete saved nozzles
+  bindDisplaySavedNozzlesUI(handler) {
+    this.header.displaySavedNozzlesButton.addEventListener('click', e => {
+      
+      e.preventDefault()
+      handler()
+    })
+  }
   
   // to save current nozzleSet to local storage
   bindSave(handler) {
     this.form.addEventListener('submit', e => {
-      console.log(e)
+      const name = U.getElement('#name').value
       e.preventDefault()
-      handler('test')
+      handler(name)
       return false;
     }, false)
   }

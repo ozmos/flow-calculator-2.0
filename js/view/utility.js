@@ -69,4 +69,23 @@ class U {
       return option
     })
   }
+
+   // toggle flowrate and set button visibility
+   static toggleOnloadHiddenEls(type) {
+    let els = document.getElementsByClassName('hidden-onload')
+    els = [...els].map(el => el.style.visibility = type ? 'visible' : 'hidden')
+  }
+
+  static toggleVisibility(className, id) {
+    let els = document.getElementsByClassName(className)
+    els = [...els].map(el => {
+      if (el.id === id) {
+        if (el.style.visibility === 'hidden') {
+          el.style.visibility = 'visible'
+        } else {
+          el.style.visibility = 'hidden'
+        }
+      } return el
+    })
+  }
 }

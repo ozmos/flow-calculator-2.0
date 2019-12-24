@@ -2,6 +2,7 @@
     --cell-width: 50px;
     --cell-align: center;
     --primary-dark: #002200;
+    --max-width: 500px;
 }
 
 
@@ -45,4 +46,19 @@
 
 .cell-4 {
     grid-column: 4;
+}
+
+
+/* saved sprinklers UI */
+
+.saved {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: var(--max-width);
+    align-items: var(--cell-align);
+}
+
+.button-group * {
+    display: block;
 }

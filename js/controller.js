@@ -6,6 +6,7 @@ class Controller {
     this.view.displaySprinklerSelect(this.model.sprinklerTypes)
     this.view.bindSelectSprinkler(this.handleSelectSprinkler)
     this.view.bindSave(this.handleSave)
+    this.view.bindDisplaySavedNozzlesUI(this.handleDisplaySavedNozzles)
     
     /* bind model methods */
     this.model.bindSprinklerTypeChanged(this.onSprinklerTypeChanged)
@@ -16,7 +17,7 @@ class Controller {
   // sprinkler type
   onSprinklerTypeChanged = (type) => {
     this.view.displayPressureSelect(this.model.getPressure(type))
-    this.view.toggleOnloadHiddenEls(type)
+    U.toggleOnloadHiddenEls(type)
     
     this.view.bindSubmitPressureFlow(this.handleSubmitPressureFlow)
   }
@@ -47,10 +48,17 @@ class Controller {
     this.model.setAmount(nozzle, amount, index)
   }
 
+  // display savednozzles ui
+  handleDisplaySavedNozzles = () => {
+    
+    this.view.displaySavedNozzlesUI(this.model.savedNozzleSets)
+    U.toggleVisibility('hidden', 'saved-nozzles-ui')
+  }
+
   // save nozzle set to local storage
   handleSave = (name) => {
     this.model.saveNozzleSet(name)
   }
 }
 
-const app = new Controller(new Model(new NozzleData()), new View(new Header()));
+const app = new Controller(new Model(new NozzleData()), new View(new Header(), new SavedNozzles()));
