@@ -1,3 +1,4 @@
+// @ts-nocheck
 class Controller {
   constructor(model, view) {
     this.model = model;
@@ -7,7 +8,7 @@ class Controller {
     this.view.bindSelectSprinkler(this.handleSelectSprinkler)
     this.view.bindSave(this.handleSave)
     this.view.bindDisplaySavedNozzlesUI(this.handleDisplaySavedNozzles)
-    
+
     /* bind model methods */
     this.model.bindSprinklerTypeChanged(this.onSprinklerTypeChanged)
     this.model.bindNozzleSetChanged(this.onNozzleSetChanged)
@@ -18,18 +19,17 @@ class Controller {
   onSprinklerTypeChanged = (type) => {
     this.view.displayPressureSelect(this.model.getPressure(type))
     U.toggleOnloadHiddenEls(type)
-    
+
     this.view.bindSubmitPressureFlow(this.handleSubmitPressureFlow)
   }
-   
+
   onNozzleSetChanged = () => {
     this.view.displaySprinklers(this.model.getNozzleSet(), this.model.calculateTotal(), this.model.calculateStations())
     // TODO: create separate function which doesn't bind function every time called
     this.view.bindAmountInput(this.handleAmountInput)
-   
+
   }
 
-  
   /* event handlers */
   // fires when user selects sprinkler type, updates current sprinkler type
   handleSelectSprinkler = (type) => {
@@ -39,7 +39,7 @@ class Controller {
   // fires when user clicks "set sprinkler type, pressure and flow" button, updates current pressure and available flow, triggers onPressureFlowChanged method in model
   handleSubmitPressureFlow = (pressure, flow) => {
     this.model.setNozzleSet(this.model.sprinklerType, pressure, flow)
-    
+
     /* this.model.setFlowRate(flow) */
   }
 
@@ -50,7 +50,6 @@ class Controller {
 
   // display savednozzles ui
   handleDisplaySavedNozzles = () => {
-    
     this.view.displaySavedNozzlesUI(this.model.savedNozzleSets)
     U.toggleVisibility('hidden', 'saved-nozzles-ui')
   }
@@ -61,4 +60,4 @@ class Controller {
   }
 }
 
-const app = new Controller(new Model(new NozzleData()), new View(new Header(), new SavedNozzles()));
+const app = new Controller(new Model(new NozzleData()), new View(new Header(), new SavedNozzlesUI()));

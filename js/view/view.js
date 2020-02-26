@@ -1,5 +1,5 @@
 class View {
-  constructor(header, savedNozzles) {
+  constructor(header, savedNozzlesUI) {
     // root
     this.app = U.getElement('#root')
 
@@ -7,7 +7,7 @@ class View {
     this.header = header
 
     /* saved nozzles UI */
-    this.savedNozzles = savedNozzles
+    this.savedNozzlesUI = savedNozzlesUI
     /* form */
       // Legend
   
@@ -39,7 +39,7 @@ class View {
 
     // main
     this.main = U.createElement('main')
-    this.main.append(this.form, this.savedNozzles.savedNozzlesContainer)
+    this.main.append(this.form, this.savedNozzlesUI.savedNozzlesContainer)
  
     this.app.append(this.header.header, this.main)
 
@@ -173,7 +173,7 @@ class View {
   }
  
   displaySavedNozzlesUI (data) {
-    this.savedNozzles.displaySavedNozzles(data)
+    this.savedNozzlesUI.displaySavedNozzles(data)
    
   }
   /* event handlers */
@@ -218,6 +218,7 @@ class View {
       handler()
     })
   }
+  
   
   // to save current nozzleSet to local storage
   bindSave(handler) {

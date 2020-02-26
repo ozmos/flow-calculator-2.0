@@ -3,16 +3,13 @@
     --cell-align: center;
     --primary-dark: #002200;
     --max-width: 500px;
+    --header-height: 150px;
 }
 
-
-/* form header */
-
-
-/* .hidden-onload {
-    display: none;
-} */
-
+/* header */
+header {
+    height: var(--header-height);
+}
 
 /* calculators */
 
@@ -21,7 +18,6 @@
     flex-flow: row wrap;
     justify-content: space-evenly;
 }
-
 
 /* table and cells */
 
@@ -48,8 +44,16 @@
     grid-column: 4;
 }
 
-
 /* saved sprinklers UI */
+
+#saved-nozzles-ui {
+    visibility: visible;
+    position: fixed;
+    top: var(--header-height);
+    background: lightgrey;
+    width: 100%;
+    transition: all 0.5s;
+}
 
 .saved {
     display: grid;
